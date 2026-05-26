@@ -41,25 +41,25 @@ Feel free to explore, reference, or build on top of it.
 > See [`Data/README.md`](./Data/README.md) for download instructions.
 
 ---
-# Projects
+## Projects
 
+
+---
 ## Tools Used
 
 
 
 ---
-
 ## Status
 
 
 ---
-
 ## Author
 
 **Niraj Poudel**
 
 [GitHub](https://github.com/nirajpoudel) · 
-[LinkedIn](https://linkedin.com/in/yourprofile)
+[LinkedIn](https://www.linkedin.com/in/mrniraj/)
 
 ---
 
