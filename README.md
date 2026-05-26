@@ -245,21 +245,7 @@ data/
 ---
 ```
 ## 📋 Requirements
-pandas>=2.0.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
-statsmodels>=0.14.0
-scipy>=1.11.0
-prophet>=1.1.4
-xgboost>=2.0.0
-lightgbm>=4.0.0
-matplotlib>=3.7.0
-seaborn>=0.12.0
-plotly>=5.15.0
-jupyterlab>=4.0.0
-sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.0
-openpyxl>=3.1.0
+
 ```
 ---
 
@@ -278,6 +264,7 @@ This project simulates the analytics workflows of a **retail supply chain analys
 ---
 
 ## 📁 .gitignore
+```
 data/
 *.csv
 *.xlsx
@@ -286,7 +273,7 @@ pycache/
 venv/
 .env
 *.pyc
-
+```
 ---
 
 ## 🗺️ Roadmap
