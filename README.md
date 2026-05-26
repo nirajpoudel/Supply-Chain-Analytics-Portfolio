@@ -42,61 +42,30 @@ The portfolio is structured to demonstrate skills relevant to roles such as:
 ---
 
 ## 🗂️ Project Structure
-~
+```
 supply-chain-analytics/
 │
-├── data/                               # All dataset files
-│   ├── sales_train_validation.csv      # Daily unit sales per SKU
-│   ├── calendar.csv                    # Date, event, and SNAP features
-│   └── sell_prices.csv                 # Weekly sell prices per SKU per store
+├── data/                               
+│   ├── sales_train_validation.csv      
+│   ├── calendar.csv                    
+│   └── sell_prices.csv                 
 │
-├── resources/                          # Reference materials and documentation
-│   ├── notes/                          # Study notes and concept references
-│   ├── guides/                         # Business logic and methodology guides
-│   └── links.md                        # Useful references and learning resources
+├── resources/                          
+│   ├── notes/                          
+│   ├── guides/                         
+│   └── links.md                        
 │
-├── project-0-eda/                      # Exploratory Data Analysis
-│   ├── excel/                          # Excel workbooks and Power Query files
-│   ├── sql/                            # SQL queries for EDA
-│   ├── notebooks/                      # Python EDA notebooks
-│   ├── dashboards/                     # Tableau / Power BI dashboard files
-│   └── README.md
-│
-├── project-1-sales-forecasting/        # Sales Forecasting
-│   ├── excel/                          # Excel-based forecasting models
-│   ├── sql/                            # SQL forecasting queries
-│   ├── notebooks/                      # Python forecasting notebooks
-│   ├── models/                         # Saved forecasting models
-│   ├── dashboards/                     # Forecast accuracy dashboards
-│   └── README.md
-│
-├── project-2-inventory-optimization/   # Inventory Optimization
-│   ├── sql/                            # SQL inventory queries
-│   ├── notebooks/                      # Python optimization notebooks
-│   ├── dashboards/                     # Inventory dashboards
-│   └── README.md
-│
-├── project-3-operations-analysis/      # Supply Chain Operations Analysis
-│   ├── sql/                            # SQL operations queries
-│   ├── notebooks/                      # Python operations notebooks
-│   ├── dashboards/                     # Operations KPI dashboards
-│   └── README.md
-│
-├── project-4-demand-planning/          # Demand Planning
-│   ├── notebooks/                      # Python demand planning notebooks
-│   ├── models/                         # Saved demand planning models
-│   ├── dashboards/                     # Demand planning dashboards
-│   └── README.md
-│
-├── project-5-replenishment-planning/   # Replenishment Planning
-│   ├── notebooks/                      # Python replenishment notebooks
-│   ├── dashboards/                     # Replenishment dashboards
-│   └── README.md
+├── project-0-eda/                      
+├── project-1-sales-forecasting/        
+├── project-2-inventory-optimization/   
+├── project-3-operations-analysis/      
+├── project-4-demand-planning/          
+├── project-5-replenishment-planning/   
 │
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-~
+```
 ---
 
 ## 🚀 Projects
@@ -264,10 +233,12 @@ pip install -r requirements.txt
 
 ### 4. Download the Dataset
 Download the M5 Forecasting dataset from Kaggle and place all three files inside the `data/` folder:
+```
 data/
 ├── sales_train_validation.csv
 ├── calendar.csv
 └── sell_prices.csv
+```
 
 > **Note:** Dataset files are not tracked in this repository due to size. Download them directly from [Kaggle](https://www.kaggle.com/competitions/m5-forecasting-accuracy/data).
 
