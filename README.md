@@ -42,6 +42,7 @@ The portfolio is structured to demonstrate skills relevant to roles such as:
 ---
 
 ## 🗂️ Project Structure
+~
 supply-chain-analytics/
 │
 ├── data/                               # All dataset files
@@ -95,7 +96,7 @@ supply-chain-analytics/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-
+~
 ---
 
 ## 🚀 Projects
