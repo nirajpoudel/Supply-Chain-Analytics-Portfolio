@@ -243,7 +243,7 @@ data/
 > **Note:** Dataset files are not tracked in this repository due to size. Download them directly from [Kaggle](https://www.kaggle.com/competitions/m5-forecasting-accuracy/data).
 
 ---
-
+```
 ## 📋 Requirements
 pandas>=2.0.0
 numpy>=1.24.0
@@ -260,7 +260,7 @@ jupyterlab>=4.0.0
 sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.0
 openpyxl>=3.1.0
-
+```
 ---
 
 ## 📊 Business Context
