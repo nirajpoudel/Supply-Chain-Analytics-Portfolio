@@ -2,4 +2,5 @@
 
 Structure
 
-- Cleaned.xlsx : Contains 3 different SKU's from the Food Category. 
+├── EDA data/                               
+│   ├── cleaned.xlsx   : Contains 3 different SKU's from the Food Category. 
