@@ -1,5 +1,4 @@
-# Project 0: Exploratory Data Analysis (EDA) for Retail Demand Data
-
+# Project 0: Exploratory Data Analysis (EDA) 
 ## Overview
 
 This project focuses on performing a complete Exploratory Data Analysis (EDA) on retail sales data before any forecasting, inventory planning, or machine learning modeling is attempted.
@@ -46,7 +45,7 @@ This project addresses these questions through systematic exploratory analysis.
 
 # Dataset Overview
 
-The dataset is derived from the M5 Forecasting Dataset and contains:
+The dataset is derived from the M5 Forecasting Dataset:
 
 ### Products Analyzed
 
@@ -116,6 +115,7 @@ This project demonstrates practical business analytics skills including:
 - Pivot-style analysis
 - Statistical analysis
 - INDEX + MATCH
+- XLOOKUPS
 - AVERAGEIF
 - AVERAGEIFS
 - COUNTIFS
