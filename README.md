@@ -1,4 +1,4 @@
-# Supply Chain Analytics & Planning Portfolio
+# Supply Chain Analytics Portfolio
 
 A hands-on portfolio demonstrating how raw operational data can be transformed into business decisions through analytics, forecasting, planning, inventory optimization, and replenishment strategies.
 
