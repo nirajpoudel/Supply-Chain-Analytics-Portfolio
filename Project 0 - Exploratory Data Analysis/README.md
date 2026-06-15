@@ -1,170 +1,548 @@
-# P0 — Exploratory Data Analysis
-**M5 Forecasting Dataset · FOODS Department · Walmart CA_1 Store**
-
----
+# Project 0: Exploratory Data Analysis (EDA) for Retail Demand Data
 
 ## Overview
 
-Before you build any forecast, before you set a single reorder point, before you touch a model — you need to understand your data. What does demand actually look like? Is it smooth or erratic? Does it spike on weekends? Do holidays help or hurt sales? Does the government assistance program in your state move the needle?
+This project focuses on performing a complete Exploratory Data Analysis (EDA) on retail sales data before any forecasting, inventory planning, or machine learning modeling is attempted.
 
-These are not optional questions. They are the difference between a forecast that reflects reality and one that confidently produces the wrong number.
+The objective is to understand the behavior of demand, identify patterns, quantify variability, evaluate the impact of business events, and uncover demand drivers that influence product sales.
 
-This project is a complete exploratory analysis of daily sales data for three food items at a Walmart store in California — using 355 days of real transaction data from the M5 Forecasting Competition. No Python. No Power BI. Just Excel, done properly.
+This project was completed entirely in Microsoft Excel using structured analytical techniques commonly used by:
 
-The goal is to know these three SKUs inside out before anything gets modeled.
+- Supply Chain Analysts
+- Demand Planners
+- Inventory Analysts
+- Business Analysts
+- Data Analysts
+- Forecasting Analysts
 
----
-
-## Dataset
-
-| File | What it is |
-|---|---|
-| `sales_train_validation.csv` | M5 Competition file — 30,490 SKUs, each with 1,913 days of daily sales |
-| `calendar.csv` | Date reference — weekday, month, US events, SNAP disbursement flags |
-| **Scope** | SKUs: `FOODS_1_001`, `FOODS_1_002`, `FOODS_1_003` · Store: `CA_1` · Jan 29, 2011 → Jan 18, 2012 |
-
-The raw sales file is enormous — 30,490 rows by 1,919 columns. Power Query was used to extract just the three target SKUs without crashing Excel, then INDEX+MATCH joined the sales data to the calendar dimension day by day.
+Rather than jumping directly into forecasting models, this project follows a business-first approach by understanding the data before making decisions.
 
 ---
 
-## What Each Sheet Does and Why It Matters
+# Business Problem
 
-### Sheet 1 — RawData
-This is the base table everything else references. 355 rows, one per day, with the date, weekday, month, event name, SNAP flag, and daily unit sales for all three SKUs sitting side by side.
+Organizations frequently struggle with:
 
-It sounds simple, but getting here required pulling three specific rows out of a 30,000-row flat file and reshaping wide sales columns (one column per day) into a vertical time series (one row per day) — which is how analysis tools actually expect time series data to be structured. If this step is sloppy, every analysis downstream inherits the mess.
+- Unpredictable demand
+- Stockouts
+- Excess inventory
+- Poor forecasting accuracy
+- Seasonal demand fluctuations
+- Promotional and event-driven demand spikes
 
-This sheet is read-only. Nothing gets edited here. Every other sheet pulls from it.
+Before forecasting future demand, analysts must answer fundamental questions:
 
----
+- Is demand stable or volatile?
+- Which days sell more?
+- Which months perform better?
+- Do holidays impact sales?
+- Does SNAP influence food purchases?
+- Are products behaving similarly?
+- Are there long-term demand trends?
 
-### Sheet 2 — SummaryStats
-This is where you find out what kind of demand you are actually dealing with.
-
-The key metric here is the **Coefficient of Variation** — standard deviation divided by mean. It tells you how erratic demand is relative to its average level. A CV below 0.2 means demand is stable and predictable. A CV above 0.5 means it is volatile. Above 1.0 means it is genuinely intermittent — the kind of demand where the average is almost meaningless because zero days and spike days are both common.
-
-All three SKUs in this project have a CV above 1.2. Every single one. And when you look at the zero-sales rate, it clicks: more than 50% of all days recorded zero units sold. The median daily sales for all three SKUs is zero.
-
-This matters enormously in practice. A business that looks at average daily sales of 0.90 units and builds a forecast from that number is going to be wrong most days — because most days the real answer is either zero or a small spike, never 0.90. Simple moving averages and basic exponential smoothing were designed for smooth, regular demand. Using them on data like this produces forecasts that are always slightly wrong and never exactly right. The CV analysis in this sheet is what tells you that — before you waste time building the wrong model.
-
-**Concepts: descriptive statistics, demand classification, CV thresholds, intermittent demand identification, outlier detection, IQR and percentile profiling.**
-
----
-
-### Sheet 3 — WeekdayPattern
-The question here is simple: does the day of the week matter?
-
-This sheet calculates average sales per SKU for each day of the week, then converts those averages into a **seasonal index** — a multiplier that shows how each day compares to the weekly average. An index of 1.31 means that day sells 31% above average. An index of 0.72 means it sells 28% below.
-
-The short answer is yes, the day of the week absolutely matters — but not in the same way for every SKU. SKU3 sells 75% above average on Saturdays. SKU1 peaks on Sundays. Monday and Tuesday are consistently weak across all three.
-
-In a real business, this is not just interesting — it is actionable. If your replenishment delivery arrives on Monday and demand spikes on weekends, you need to order earlier or carry enough buffer to cover the gap. If you are staffing a warehouse and you know Friday and Saturday drive the highest pick volumes, you do not schedule your smallest crew those days. The weekday index quantifies something that experienced floor workers often know intuitively but have never seen as a number.
-
-**Concepts: AVERAGEIF for conditional aggregation, seasonal index construction, day-of-week decomposition, application to replenishment timing and labor planning.**
+This project addresses these questions through systematic exploratory analysis.
 
 ---
 
-### Sheet 4 — MonthlyPattern
-Same idea as the weekday analysis, but zoomed out to the full year.
+# Dataset Overview
 
-This sheet builds a monthly seasonal index to answer: which months consistently sell above average, and which months are slow? It covers a full 12-month cycle — January 2011 through January 2012 — giving enough data to see the seasonal shape clearly.
+The dataset is derived from the M5 Forecasting Dataset and contains:
 
-The patterns here are more dramatic than the weekday patterns. FOODS_1_001 has a December index of 1.93 and a May index of 1.79 — meaning December sells nearly twice the monthly average. But then between August and October, the same SKU shows near-zero sales. That is not a normal seasonal dip. That is an anomaly. A stockout that was never resolved? A range change that removed the item from the planogram? A data quality issue? The EDA does not answer that question — but it flags it clearly, so whoever builds the forecast in the next project knows not to train a model on those months without investigating first.
+### Products Analyzed
 
-That is exactly what EDA is for. Not just to find patterns, but to find the things that look wrong and ask why before they corrupt your analysis.
+- FOODS_1_001
+- FOODS_1_002
+- FOODS_1_003
 
-**Concepts: AVERAGEIF by month, monthly seasonal index, within-year seasonality, anomaly identification, data quality flags for downstream modeling.**
+### Store
 
----
+- CA_1 (California)
 
-### Sheet 5 — EventAnalysis
-Retail demand does not exist in a vacuum. People buy differently on Super Bowl Sunday than on a regular Sunday. They shop differently around Thanksgiving. They behave differently during Ramadan, around Easter, around school holidays.
+### Category
 
-This sheet quantifies exactly how much different.
+- FOODS
 
-It calculates average daily sales for each event category — Sporting, Cultural, National, Religious — and compares them to the no-event baseline. The result is an **event lift percentage**: how much sales go up or down relative to a normal day.
+### Time Period
 
-The findings here are counterintuitive in places. National holidays — Memorial Day, Independence Day, Labor Day, Thanksgiving — consistently suppress sales across all three SKUs. SKU1 drops 46% on National holiday days. SKU3 drops 43%. This is the opposite of what you might assume if you think "holiday = more shopping." For this category, at this store, people are not stocking up for the holiday — they are not shopping at all.
+- 365 Days
+- January 2011 – January 2012
 
-Sporting events tell a different story. SKU1 and SKU3 jump significantly on sporting event days. SKU2 drops. That kind of split within the same department tells you these items serve different consumption occasions — they are not interchangeable in the customer's mind even though they sit in the same category.
+### Additional Business Attributes
 
-In supply chain practice, this analysis becomes the foundation for **promotional and event-based order adjustments**. If your statistical forecast says you need 10 units the week of Independence Day and your event lift says demand drops 46%, you should be ordering 6 — not 10. Getting that wrong is how holiday overstock accumulates. And overstock in food has a shelf-life problem that overstock in apparel does not.
-
-**Concepts: AVERAGEIF/COUNTIF for event segmentation, lift vs. baseline calculation, external demand driver quantification, event-adjusted ordering logic.**
-
----
-
-### Sheet 6 — SNAPAnalysis
-SNAP is the US government's food assistance program — what was previously called food stamps. Benefits are disbursed on a schedule each month, and for food retailers, those disbursement dates create predictable demand spikes that a model trained only on historical averages will completely miss.
-
-This sheet compares sales on SNAP days vs. non-SNAP days for California (the store is CA_1) and calculates the uplift. SKU2 shows a 14.6% uplift on SNAP days. SKU1 shows 8.8%. SKU3 actually shows a slight negative — which is an interesting signal that these three items serve different customer segments even within the same store.
-
-But the more granular finding is in the secondary analysis: which weekdays are SNAP days in California, and how does sales performance differ when a SNAP day lands on a high-index weekday versus a low one? The combination of a SNAP day on a strong weekday amplifies demand. A SNAP day on a weak weekday partially offsets it. An analyst who only looks at "SNAP vs. non-SNAP" at the month level would miss the interaction entirely.
-
-In real operations, SNAP calendars are published in advance. There is no excuse for a supply chain analyst at a food retailer not to incorporate them into replenishment planning. This sheet shows exactly how to quantify the effect before building it into a planning model.
-
-**Concepts: AVERAGEIF with binary flag, uplift calculation, COUNTIFS/AVERAGEIFS for two-variable interaction, government program demand drivers, demand driver interaction effects.**
+- Calendar information
+- Weekday information
+- Month and year
+- Event names
+- Event types
+- SNAP eligibility days
 
 ---
 
-### Sheet 7 — RollingTrend
-Raw daily sales for intermittent items look like noise. A day with 9 units followed by three days of zero followed by a day with 2 units — plotted as a line chart, this tells you almost nothing about where demand is heading.
+# Project Objectives
 
-The rolling average fixes that. This sheet calculates a 28-day (4-week) rolling average and plots it against the actual daily sales. The rolling average absorbs the day-to-day randomness and surfaces the underlying trend.
+The primary objectives were:
 
-What it shows for these SKUs is that demand is roughly stationary over the year — no strong growth trend, no clear decline. It oscillates seasonally but does not drift persistently in either direction. That is a useful finding for forecasting: it means you do not need a trend-adjusted model (like Holt-Winters double exponential smoothing). Adding a trend component to a stationary series does not improve accuracy — it adds complexity and potential for error without benefit.
+✅ Understand demand behavior
 
-Knowing what your data does not need is just as important as knowing what it does.
+✅ Measure demand variability
 
-**Concepts: rolling window calculations, noise smoothing, trend identification, stationarity assessment, time series chart design.**
+✅ Identify seasonality patterns
 
----
+✅ Analyze event impacts
 
-### Sheet 8 — CorrelationMatrix
-The final sheet asks: how related are these three SKUs to each other?
+✅ Analyze SNAP impacts
 
-If two items are highly correlated, they respond similarly to the same demand drivers — weekends, events, SNAP days. That validates the patterns found in earlier sheets as category-level behavior, not just quirks of one item. It also has implications for inventory strategy: highly correlated items in the same category can sometimes be managed with shared planning rules rather than fully independent models.
+✅ Detect trends over time
 
-The correlation matrix is paired with a **demand variability ranking** using the CV values from Sheet 2. This gives a clear answer to a practical question: if you had limited time and had to prioritize which SKU to focus your analytical effort on first, which one is most stable (easiest to forecast accurately) and which is most erratic (needs the most safety stock and the most sophisticated approach)?
+✅ Measure product relationships
 
-In a real portfolio of hundreds or thousands of SKUs, this kind of ranking — demand variability segmentation — is how analysts decide where to invest modeling effort and where to use simple rule-based approaches.
-
-**Concepts: Pearson correlation, CORREL function, inter-series relationship analysis, demand variability ranking, SKU prioritization for forecasting and inventory investment.**
+✅ Build a strong foundation for future forecasting projects
 
 ---
 
-## Skills Demonstrated
+# Skills Demonstrated
 
-**Data Engineering**
-- Power Query: filtering a 30,490-row × 1,919-column flat file to 3 target rows without loading the full dataset
-- INDEX+MATCH for horizontal-to-vertical transposition — reshaping wide sales data into a proper time series
-- Multi-sheet relational model with a single protected source table feeding all analysis sheets
+This project demonstrates practical business analytics skills including:
 
-**Statistical Analysis**
-- Full descriptive profile: mean, median, standard deviation, CV, IQR, percentiles, zero-sales rate
-- Demand classification using CV thresholds
-- Pearson correlation across time series
+### Data Preparation
 
-**Demand Pattern Analysis**
-- Weekday and monthly seasonal index construction
-- Event type lift quantification vs. no-event baseline
-- SNAP uplift analysis with weekday interaction breakdown
-- 28-day rolling average for trend isolation and stationarity assessment
+- Data cleaning
+- Data transformation
+- Data integration
+- Data validation
 
-**Analytical Thinking**
-- Correctly identified all three SKUs as intermittent demand before selecting any modeling approach
-- Flagged the August–October anomaly in SKU1 as a data quality / operational issue requiring investigation
-- Identified SKU-level behavioral differences within the same department and store
-- Connected every finding to a real business or modeling decision — not just reported numbers
+### Excel Analytics
+
+- Pivot-style analysis
+- Statistical analysis
+- INDEX + MATCH
+- AVERAGEIF
+- AVERAGEIFS
+- COUNTIFS
+- CORREL
+- Percentile analysis
+- Rolling calculations
+
+### Supply Chain Analytics
+
+- Demand variability analysis
+- Seasonal analysis
+- Event impact analysis
+- Demand driver analysis
+- Inventory planning concepts
+- Forecasting readiness assessment
 
 ---
 
-## Tools
+# Workbook Structure
 
-- **Microsoft Excel** — Power Query, INDEX+MATCH, AVERAGEIF / AVERAGEIFS / COUNTIF / COUNTIFS, CORREL, PERCENTILE, STDEV, conditional formatting, charts
-- **M5 Forecasting Dataset** — real Walmart retail transaction data, publicly available via Kaggle
-- No Python. No Power BI. No third-party add-ins.
+The workbook contains 8 analytical sheets.
 
 ---
 
-## Repository
+# Sheet 1: RawData
+
+## Purpose
+
+This sheet acts as the single source of truth for the entire analysis.
+
+It contains the merged master dataset including:
+
+- Date
+- Week information
+- Weekday
+- Month
+- Year
+- Event information
+- SNAP indicators
+- Daily sales for all 3 SKUs
+
+## Business Importance
+
+In real-world organizations, analysts spend significant time creating a clean and trusted dataset before performing analysis.
+
+This sheet represents that foundational data layer from which all subsequent analysis is built.
+
+### Concepts Covered
+
+- Data integration
+- Calendar mapping
+- Demand history creation
+- Master data preparation
+
+---
+
+# Sheet 2: SummaryStats
+
+## Purpose
+
+This sheet builds a statistical profile of each SKU.
+
+Metrics analyzed include:
+
+- Total Units Sold
+- Average Daily Sales
+- Median Sales
+- Standard Deviation
+- Coefficient of Variation (CV)
+- Maximum Demand
+- Minimum Demand
+- Zero-Sales Days
+- Percentiles
+- Interquartile Range (IQR)
+
+## Key Findings
+
+### Demand Variability
+
+| SKU | CV |
+|------|------|
+| FOODS_1_001 | 1.56 |
+| FOODS_1_002 | 1.26 |
+| FOODS_1_003 | 1.39 |
+
+All three products exhibit highly variable demand.
+
+A CV greater than 0.50 generally indicates intermittent or difficult-to-predict demand.
+
+### Zero Demand Frequency
+
+More than 50% of days recorded zero sales across all products.
+
+This indicates:
+
+- Intermittent demand
+- Forecasting complexity
+- Potential inventory planning challenges
+
+## Business Importance
+
+Demand variability directly affects:
+
+- Safety stock calculations
+- Reorder points
+- Forecast accuracy
+- Inventory carrying costs
+
+### Concepts Covered
+
+- Descriptive statistics
+- Demand variability
+- Forecastability assessment
+- Inventory risk indicators
+
+---
+
+# Sheet 3: WeekdayPattern
+
+## Purpose
+
+Analyzes sales behavior by day of the week.
+
+The objective is to determine whether certain weekdays consistently outperform others.
+
+## Business Questions Answered
+
+- Which days generate the highest sales?
+- Which days experience weaker demand?
+- Should staffing levels vary by weekday?
+- Should replenishment schedules change?
+
+## Business Importance
+
+Weekday patterns are critical for:
+
+- Warehouse labor planning
+- Replenishment scheduling
+- Inventory positioning
+- Transportation planning
+
+### Concepts Covered
+
+- Weekly seasonality
+- Seasonal index calculation
+- Demand pattern recognition
+- Workforce planning analytics
+
+---
+
+# Sheet 4: MonthlyPattern
+
+## Purpose
+
+Analyzes sales performance across months.
+
+Monthly averages are used to identify seasonal behavior.
+
+## Business Questions Answered
+
+- Which months perform better?
+- Which months experience lower demand?
+- Is demand seasonal?
+
+## Business Importance
+
+Monthly seasonality drives:
+
+- Inventory investment decisions
+- Capacity planning
+- Procurement schedules
+- Financial forecasting
+
+### Concepts Covered
+
+- Monthly seasonality
+- Seasonal indices
+- Time-series decomposition foundations
+- Demand planning preparation
+
+---
+
+# Sheet 5: EventAnalysis
+
+## Purpose
+
+Measures how events influence product demand.
+
+Events are categorized as:
+
+- Sporting
+- Cultural
+- National
+- Religious
+
+The analysis compares demand during event periods versus normal periods.
+
+## Business Questions Answered
+
+- Which events increase demand?
+- Which events have minimal impact?
+- How much demand lift occurs during events?
+
+## Business Importance
+
+Organizations routinely adjust forecasts around:
+
+- Super Bowl
+- Christmas
+- Thanksgiving
+- Valentine's Day
+- Other promotional periods
+
+Understanding event impact helps improve forecast accuracy and inventory readiness.
+
+### Concepts Covered
+
+- Demand driver analysis
+- Event lift analysis
+- Promotional analytics
+- Forecast adjustment factors
+
+---
+
+# Sheet 6: SnapAnalysis
+
+## Purpose
+
+Evaluates the impact of SNAP (Supplemental Nutrition Assistance Program) days on food sales.
+
+The analysis compares:
+
+- SNAP Days
+- Non-SNAP Days
+
+## Key Findings
+
+### Demand Uplift
+
+| SKU | SNAP Uplift |
+|------|------|
+| FOODS_1_001 | +8.76% |
+| FOODS_1_002 | +14.64% |
+| FOODS_1_003 | -8.13% |
+
+The results suggest that SNAP activity influences purchasing behavior differently across products.
+
+## Business Importance
+
+Understanding SNAP impact is important for:
+
+- Grocery retailers
+- Demand planners
+- Inventory managers
+- Store operations teams
+
+It enables organizations to anticipate demand shifts and position inventory appropriately.
+
+### Concepts Covered
+
+- External demand drivers
+- Customer purchasing behavior
+- Policy-driven demand changes
+- Demand segmentation
+
+---
+
+# Sheet 7: Rolling Trend
+
+## Purpose
+
+Identifies long-term demand movement over time.
+
+Metrics include:
+
+- Daily sales
+- 28-Day Rolling Average
+- 28-Day Rolling Total
+
+## Business Questions Answered
+
+- Is demand growing?
+- Is demand declining?
+- Is demand stable?
+
+## Business Importance
+
+Trend analysis supports:
+
+- Strategic planning
+- Inventory investment decisions
+- Forecast model selection
+- Product lifecycle analysis
+
+### Concepts Covered
+
+- Moving averages
+- Trend detection
+- Time-series smoothing
+- Demand trajectory analysis
+
+---
+
+# Sheet 8: CorrelationMatrix
+
+## Purpose
+
+Measures relationships between products.
+
+Correlation analysis helps determine whether products respond similarly to demand drivers.
+
+## Key Findings
+
+Observed correlations are relatively weak:
+
+| Relationship | Correlation |
+|-------------|-------------|
+| SKU1 vs SKU2 | -0.009 |
+| SKU1 vs SKU3 | 0.129 |
+| SKU2 vs SKU3 | 0.082 |
+
+This suggests that the products do not strongly move together and may require independent forecasting approaches.
+
+## Business Importance
+
+Correlation analysis helps:
+
+- Identify shared demand drivers
+- Support product grouping strategies
+- Improve forecasting hierarchy design
+- Optimize inventory planning
+
+### Concepts Covered
+
+- Correlation analysis
+- Product affinity
+- Demand relationship modeling
+- Forecast segmentation
+
+---
+
+# End-to-End Analytical Approach
+
+This project follows a structured analytical workflow:
+
+### Step 1
+Data Collection
+
+↓
+
+### Step 2
+Data Cleaning & Integration
+
+↓
+
+### Step 3
+Statistical Profiling
+
+↓
+
+### Step 4
+Seasonality Analysis
+
+↓
+
+### Step 5
+Event Impact Analysis
+
+↓
+
+### Step 6
+External Driver Analysis (SNAP)
+
+↓
+
+### Step 7
+Trend Detection
+
+↓
+
+### Step 8
+Product Relationship Analysis
+
+↓
+
+### Step 9
+Forecasting Readiness Assessment
+
+This mirrors the process used by professional analysts before building forecasting models.
+
+---
+
+# What I Learned
+
+Through this project I gained practical experience in:
+
+- Retail demand analysis
+- Supply chain analytics
+- Data preparation techniques
+- Statistical analysis in Excel
+- Seasonal demand identification
+- Event-driven demand analysis
+- Demand variability assessment
+- Trend analysis
+- Correlation analysis
+- Forecasting preparation
+
+Most importantly, I learned that successful forecasting begins with understanding the business and the data rather than immediately applying predictive models.
+
+---
+
+# Project Outcome
+
+By completing this EDA project, I developed a comprehensive understanding of:
+
+- Demand behavior
+- Demand variability
+- Seasonality
+- Event effects
+- SNAP effects
+- Product relationships
+- Long-term trends
+
+These insights provide the analytical foundation required for demand forecasting, inventory planning, and supply chain decision-making.
+
+---
+
+## Portfolio Note
+
+This project is the first stage of a broader Supply Chain Analytics and Floor to Forecasting portfolio roadmap, where each project builds upon the insights and business understanding established during exploratory data analysis.
